@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os, pickle, platform, psutil
 from sklearn.preprocessing import PolynomialFeatures
-from subprocess import Popen, PIPE
+from subprocess import Popen, DEVNULL, PIPE
 from time import time, sleep
 
 class PowerModel:
@@ -35,7 +35,9 @@ class PowerModel:
   def runcmd(self, output, cmd):
     csv = ['timestamp,power']
     # *no security checks or validation of the command*
-    proc = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+    proc = Popen(cmd,
+                  stdin=DEVNULL, stdout=PIPE, stderr=PIPE,
+                  shell=True)
     start = time()
     while True:
       # Set the cpu percentage
@@ -48,6 +50,12 @@ class PowerModel:
       csv.append(f'{time()-start},{power.item()}')
       # proc.poll() will return None if cmd is still running
       if proc.poll() is not None: break
+    if proc.returncode != 0:
+      print(f'{cmd} exited with code {proc.returncode}')
+      msg = proc.stdout.read().decode('utf-8')
+      if msg: print(f'stdout:\n{msg}')
+      msg = proc.stderr.read().decode('utf-8')
+      if msg: print(f'stderr:\n{msg}')
     with open(output,'w') as outfile:
       outfile.write('\n'.join(csv)+'\n')
 

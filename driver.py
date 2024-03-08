@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import cpuinfo, os, psutil
+import cpuinfo, os, psutil, sys
 from models.powermodel import PowerModel
 
 def getmachinespec():
@@ -36,5 +36,6 @@ if __name__ == '__main__':
   model.load( treepath='data/DecisionTree.pickle',
               dfpath='data/my_df_up.csv',
               modelpath='data/powermodel.pickle')
-  model.runcmd(output='poweruse.csv',cmd='sleep 7')
+  cmd = 'sleep 7' if len(sys.argv) == 1 else ' '.join(sys.argv[1:])
+  model.runcmd(output='poweruse.csv',cmd=cmd)
 
