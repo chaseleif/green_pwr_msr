@@ -8,10 +8,11 @@ def getmachinespec():
   machine = None
   if os.path.isfile(csvname):
     machine = {}
+    cast = lambda key, val: int(val) if key!='frequency' else float(val)
     with open(csvname,'r') as infile:
       for line in infile.readlines():
         parts = line.rstrip().split()
-        machine[parts[0]] = float(parts[1])
+        machine[parts[0]] = cast(parts[0], parts[1])
   if machine is None:
     # The multiplier, 2, for number_of_threads is copied from the original
     # os.cpu_count() returns logical cores already, unsure of the intent
