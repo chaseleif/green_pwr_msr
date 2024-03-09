@@ -2,10 +2,10 @@
 
 import numpy as np
 import pandas as pd
-import os, pickle, platform, psutil
+import os, pickle, psutil
 from sklearn.preprocessing import PolynomialFeatures
 from subprocess import Popen, DEVNULL, PIPE
-from time import time, sleep
+from time import time
 
 class PowerModel:
   def __init__(self, machine):
@@ -34,7 +34,6 @@ class PowerModel:
 
   def runcmd(self, output, cmd):
     csv = ['timestamp,power']
-    # *no security checks or validation of the command*
     proc = Popen(cmd, stdin=DEVNULL, stdout=PIPE, stderr=PIPE)
     start = time()
     while True:

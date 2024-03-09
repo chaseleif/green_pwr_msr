@@ -33,9 +33,9 @@ def getmachinespec():
 
 if __name__ == '__main__':
   model = PowerModel(getmachinespec())
-  model.load( treepath='data/DecisionTree.pickle',
-              dfpath='data/my_df_up.csv',
-              modelpath='data/powermodel.pickle')
+  model.load( treepath=os.path.join('data','DecisionTree.pickle'),
+              dfpath=os.path.join('data','my_df_up.csv'),
+              modelpath=os.path.join('data','powermodel.pickle'))
   cmd = ['sleep', '7'] if len(sys.argv) == 1 else sys.argv[1:]
   model.runcmd(output='poweruse.csv',cmd=cmd)
 
