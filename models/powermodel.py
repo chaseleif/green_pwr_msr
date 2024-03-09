@@ -35,9 +35,7 @@ class PowerModel:
   def runcmd(self, output, cmd):
     csv = ['timestamp,power']
     # *no security checks or validation of the command*
-    proc = Popen(cmd,
-                  stdin=DEVNULL, stdout=PIPE, stderr=PIPE,
-                  shell=True)
+    proc = Popen(cmd, stdin=DEVNULL, stdout=PIPE, stderr=PIPE)
     start = time()
     while True:
       # Set the cpu percentage
