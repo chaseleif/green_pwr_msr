@@ -32,9 +32,10 @@ class PowerModel:
     with open(modelpath,'rb') as infile:
       self.powermodel = pickle.load(infile)
 
-  def runcmd(self, output, cmd):
+  def runcmd(self, output, cmd_dir, cmd):
     csv = ['timestamp,power']
-    proc = Popen(cmd, stdin=DEVNULL, stdout=PIPE, stderr=PIPE)
+    proc = Popen( cmd, cwd=cmd_dir,
+                  stdin=DEVNULL, stdout=PIPE, stderr=PIPE)
     start = time()
     while True:
       # Set the cpu percentage

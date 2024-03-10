@@ -1,41 +1,33 @@
 #! /usr/bin/env python3
 
-import cpuinfo, os, psutil, sys
+import argparse, os, sys
 from models.powermodel import PowerModel
-
-def getmachinespec():
-  csvname = os.path.join('data','cpuinfo')
-  machine = None
-  if os.path.isfile(csvname):
-    machine = {}
-    cast = lambda key, val: int(val) if key!='frequency' else float(val)
-    with open(csvname,'r') as infile:
-      for line in infile.readlines():
-        parts = line.rstrip().split()
-        machine[parts[0]] = cast(parts[0], parts[1])
-  if machine is None:
-    # The multiplier, 2, for number_of_threads is copied from the original
-    # os.cpu_count() returns logical cores already, unsure of the intent
-    # The original misclassified my Intel(R) as other, since it != 'Intel'
-    # processor was unconditionally set to -1 in the original
-    machine = cpuinfo.get_cpu_info()['brand_raw'].split()
-    machine = { 'number_of_cores':os.cpu_count(),
-                'number_of_threads':os.cpu_count()*2,
-                'frequency':psutil.cpu_freq()[2]/1000,
-                'processor_manufacturer':0 if machine[0].startswith('AMD') \
-                                    else 1 if machine[0].startswith('Intel') \
-                                    else 2,
-                'processor':-1 }
-    with open(csvname,'w') as outfile:
-      for key, val in machine.items():
-        outfile.write(f'{key} {val}\n')
-  return machine
+from utils.machineinfo import getmachinespec
 
 if __name__ == '__main__':
-  model = PowerModel(getmachinespec())
+  parser = argparse.ArgumentParser( add_help=False,
+                                    description='This utility measures ' + \
+                                      'power consumption of a program',
+                                    argument_default=argparse.SUPPRESS,
+                                    prog=sys.argv[0])
+  parser.add_argument('-h', '--help', action='store_true',
+                      help='Show this help message')
+  #parser.add_argument('--model', metavar='<model>',
+  #                    choices=['PowerModel'], default='PowerModel',
+  #                    help='Specify the power model to use')
+  parser.add_argument('-d', '--dir', metavar='<directory>',
+                      default=None,
+                      help='Specify the directory to execute command from')
+  parser.add_argument('command', nargs='*',
+                      default=['sleep','7'],
+                      help='Specify the command and arguments to execute')
+  args = vars(parser.parse_args())
+  if 'help' in args:
+    parser.print_help()
+    sys.exit(0)
+  model = PowerModel(getmachinespec(os.path.join('data','cpuinfo')))
   model.load( treepath=os.path.join('data','DecisionTree.pickle'),
               dfpath=os.path.join('data','my_df_up.csv'),
               modelpath=os.path.join('data','powermodel.pickle'))
-  cmd = ['sleep', '7'] if len(sys.argv) == 1 else sys.argv[1:]
-  model.runcmd(output='poweruse.csv',cmd=cmd)
+  model.runcmd(output='poweruse.csv',cmd_dir=args['dir'],cmd=args['command'])
 
