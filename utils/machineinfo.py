@@ -15,14 +15,12 @@ def getmachinespec(csvname='cpuinfo', new=False):
     # os.cpu_count() returns logical cores already, unsure of the intent
     # The original misclassified my Intel(R) as other, since it != 'Intel'
     # processor was unconditionally set to -1 in the original
-    machine = cpuinfo.get_cpu_info()['brand_raw'].split()
+    machine = cpuinfo.get_cpu_info()['brand_raw']
     machine = { 'number_of_cores':os.cpu_count(),
                 'number_of_threads':os.cpu_count()*2,
                 'frequency':psutil.cpu_freq()[2]/1000,
-                'processor_manufacturer':0 if any(field.startswith('AMD') \
-                                                      for field in machine) \
-                                    else 1 if any(field.startswith('Intel') \
-                                                      for field in machine) \
+                'processor_manufacturer':0 if 'AMD' in machine \
+                                    else 1 if 'Intel' in machine \
                                     else 2,
                 'processor':-1 }
     with open(csvname,'w') as outfile:
