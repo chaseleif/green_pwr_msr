@@ -15,6 +15,9 @@ if __name__ == '__main__':
   #parser.add_argument('--model', metavar='<model>',
   #                    choices=['PowerModel'], default='PowerModel',
   #                    help='Specify the power model to use')
+  parser.add_argument('-o', '--output', metavar='<output.csv>',
+                      default='poweruse.csv',
+                      help='Specify the power-use output filename')
   parser.add_argument('-d', '--dir', metavar='<directory>',
                       default=None,
                       help='Specify the directory to execute command from')
@@ -29,5 +32,5 @@ if __name__ == '__main__':
   model.load( treepath=os.path.join('data','DecisionTree.pickle'),
               dfpath=os.path.join('data','my_df_up.csv'),
               modelpath=os.path.join('data','powermodel.pickle'))
-  model.runcmd(output='poweruse.csv',cmd_dir=args['dir'],cmd=args['command'])
+  model.runcmd(output=args['output'],cmd_dir=args['dir'],cmd=args['command'])
 

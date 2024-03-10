@@ -43,7 +43,12 @@ Optionally, a directory can be specified which will the command will be executed
 $ python3 driver.py --directory=../../ mybigapp arg1 arg2
 ```
 
-The final arguments of driver.py should be the command and arguments that will be sent to POpen.[^1]
+To see the list of available options:
+```bash
+$ python3 driver.py --help
+```
+
+**The final arguments of driver.py should be the command and arguments that will be sent to POpen.**[^1]
 
 [^1]: For more information on how the process is launched: [POpen](https://docs.python.org/3/library/subprocess.html#subprocess.Popen)
 ___
