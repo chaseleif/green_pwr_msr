@@ -2,8 +2,8 @@
 
 import cpuinfo, os, psutil
 
-def getmachinespec(csvname='cpuinfo'):
-  if os.path.isfile(csvname):
+def getmachinespec(csvname='cpuinfo', new=False):
+  if not new and os.path.isfile(csvname):
     machine = {}
     cast = lambda key, val: int(val) if key!='frequency' else float(val)
     with open(csvname,'r') as infile:

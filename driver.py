@@ -15,6 +15,8 @@ if __name__ == '__main__':
   #parser.add_argument('--model', metavar='<model>',
   #                    choices=['PowerModel'], default='PowerModel',
   #                    help='Specify the power model to use')
+  parser.add_argument('-n', '--new', action='store_true', default=False,
+                      help='Regenerate machine information file')
   parser.add_argument('-o', '--output', metavar='<output.csv>',
                       default='poweruse.csv',
                       help='Specify the power-use output filename')
@@ -28,7 +30,8 @@ if __name__ == '__main__':
   if 'help' in args:
     parser.print_help()
     sys.exit(0)
-  model = PowerModel(getmachinespec(os.path.join('data','cpuinfo')))
+  model = PowerModel(getmachinespec(os.path.join('data','cpuinfo'),
+                                    new=args['new']))
   model.load( treepath=os.path.join('data','DecisionTree.pickle'),
               dfpath=os.path.join('data','my_df_up.csv'),
               modelpath=os.path.join('data','powermodel.pickle'))
