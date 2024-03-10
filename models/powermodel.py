@@ -28,7 +28,6 @@ class PowerModel:
     columns = columns[-2:]+columns[:-2]+['load_percentile']
     # Get our one row, order the columns as expected
     self.input = df.loc[take_one_value,][columns]
-    self.coredivisor = self.input[['number_of_cores']].iloc[0]
     with open(modelpath,'rb') as infile:
       self.powermodel = pickle.load(infile)
 
@@ -43,7 +42,7 @@ class PowerModel:
       # Get our polynomial
       poly = self.polyfeat.fit_transform(np.asarray(self.input).reshape(1,-1))
       # Predict
-      power = self.powermodel.predict(poly)/self.coredivisor
+      power = self.powermodel.predict(poly)
       # Log
       csv.append(f'{time()-start},{power.item()}')
       # proc.poll() will return None if cmd is still running
