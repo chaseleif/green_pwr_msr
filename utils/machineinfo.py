@@ -19,8 +19,10 @@ def getmachinespec(csvname='cpuinfo', new=False):
     machine = { 'number_of_cores':os.cpu_count(),
                 'number_of_threads':os.cpu_count()*2,
                 'frequency':psutil.cpu_freq()[2]/1000,
-                'processor_manufacturer':0 if machine[0].startswith('AMD') \
-                                    else 1 if machine[0].startswith('Intel') \
+                'processor_manufacturer':0 if any(field.startswith('AMD') \
+                                                      for field in machine) \
+                                    else 1 if any(field.startswith('Intel') \
+                                                      for field in machine) \
                                     else 2,
                 'processor':-1 }
     with open(csvname,'w') as outfile:
